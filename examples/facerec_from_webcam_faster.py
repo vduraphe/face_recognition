@@ -20,8 +20,10 @@ vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
 austin_image = face_recognition.load_image_file("austin.jpg")
 austin_face_encoding = face_recognition.face_encodings(austin_image)[0]
 vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
-list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding]
-names_of_faces = ['Barack', 'Vaidehi', 'Presenter']
+xiang_image = face_recognition.load_image_file("xiang.jpg")
+xiang_face_encoding = face_recognition.face_encodings(xiang_image)[0]
+list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]
+names_of_faces = ['Barack', 'Vaidehi', 'Presenter', 'Xiang']
 
 # Initialize some variables
 face_locations = []
