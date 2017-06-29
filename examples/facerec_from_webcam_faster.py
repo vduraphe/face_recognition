@@ -16,16 +16,21 @@ video_capture = cv2.VideoCapture(0)
 # Load a sample picture and learn how to recognize it.
 obama_image = face_recognition.load_image_file("obama.jpg")
 obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
+vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
+vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
+list_of_faces = [obama_face_encoding, vaidehi_face_encoding]
+names_of_faces = ['Barack', 'Vaidehi']
 
 # Initialize some variables
 face_locations = []
 face_encodings = []
 face_names = []
 process_this_frame = True
-
+i = 0
 while True:
     # Grab a single frame of video
     ret, frame = video_capture.read()
+
 
     # Resize frame of video to 1/4 size for faster face recognition processing
     small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
@@ -38,17 +43,22 @@ while True:
 
         face_names = []
         for face_encoding in face_encodings:
-            # See if the face is a match for the known face(s)
-            match = face_recognition.compare_faces([obama_face_encoding], face_encoding)
-            name = "Unknown"
 
-            if match[0]:
-                name = "Barack"
+            # See if the face is a match for the known face(s)
+            match = face_recognition.compare_faces(list_of_faces, face_encoding)
+            print(match)
+            name = "Unknown"
+            if match.count(1) > 0:
+                name = names_of_faces[match.index(1)]
+            else:
+                cv2.imwrite(str(i) + 'unknown.jpg', small_frame)
+                i += 1
 
             face_names.append(name)
+            if name == "Unknown":
+                print("Alert! Unknown Face!")
 
     process_this_frame = not process_this_frame
-
 
     # Display the results
     for (top, right, bottom, left), name in zip(face_locations, face_names):
