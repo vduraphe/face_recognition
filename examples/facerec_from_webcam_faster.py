@@ -17,13 +17,16 @@ video_capture = cv2.VideoCapture(0)
 obama_image = face_recognition.load_image_file("obama.jpg")
 obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
 vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
+austin_image = face_recognition.load_image_file("austin.jpg")
+austin_face_encoding = face_recognition.face_encodings(austin_image)[0]
 vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
-list_of_faces = [obama_face_encoding, vaidehi_face_encoding]
-names_of_faces = ['Barack', 'Vaidehi']
+list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding]
+names_of_faces = ['Barack', 'Vaidehi', 'Presenter']
 
 # Initialize some variables
 face_locations = []
 face_encodings = []
+unknown_face_encodings = []
 face_names = []
 process_this_frame = True
 i = 0
@@ -49,9 +52,17 @@ while True:
             print(match)
             name = "Unknown"
             if match.count(1) > 0:
+                #print(face_names)
                 name = names_of_faces[match.index(1)]
             else:
-                cv2.imwrite(str(i) + 'unknown.jpg', small_frame)
+                if len(unknown_face_encodings) > 0:
+                    unknown_match = face_recognition.compare_faces(unknown_face_encodings, face_encoding)
+                    if unknown_match.count(1) > 0:
+                        name = "Unnamed"
+                    #makeDirectory for "unnamed person"
+                unknown_face_encodings.append(face_encoding)
+                path = '/home/deeplearning/Desktop/face_recognition examples/unknown_faces/'
+                cv2.imwrite(str(path) + str(i) + 'unknown.jpg', small_frame)
                 i += 1
 
             face_names.append(name)
