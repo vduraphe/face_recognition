@@ -16,14 +16,24 @@ video_capture = cv2.VideoCapture(0)
 # Load a sample picture and learn how to recognize it.
 obama_image = face_recognition.load_image_file("obama.jpg")
 obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
-vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
+
+# austin
 austin_image = face_recognition.load_image_file("austin.jpg")
 austin_face_encoding = face_recognition.face_encodings(austin_image)[0]
+# vaidehi
+vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
 vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
+# xiang
 xiang_image = face_recognition.load_image_file("xiang.jpg")
 xiang_face_encoding = face_recognition.face_encodings(xiang_image)[0]
-list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]
-names_of_faces = ['Barack', 'Vaidehi', 'Presenter', 'Xiang']
+# iris
+#iris_image = face_recognition.load_image_file("iris.jpg")
+#iris_face_encoding = face_recognition.face_encodings(iris_image)[0]
+# sagar
+#sagar_image = face_recognition.load_image_file("sagar.jpg")
+#sagar_face_encoding = face_recognition.face_encodings(sagar_image)[0]
+list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]# sagar_face_encoding]
+names_of_faces = ['Barack', 'Vaidehi', 'Presenter', 'Xiang'] #'Sagar']
 
 # Initialize some variables
 face_locations = []
@@ -36,10 +46,9 @@ while True:
     # Grab a single frame of video
     ret, frame = video_capture.read()
 
-
     # Resize frame of video to 1/4 size for faster face recognition processing
     small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-
+    name = "Unknown"
     # Only process every other frame of video to save time
     if process_this_frame:
         # Find all the faces and face encodings in the current frame of video
@@ -52,21 +61,20 @@ while True:
             # See if the face is a match for the known face(s)
             match = face_recognition.compare_faces(list_of_faces, face_encoding)
             print(match)
-            name = "Unknown"
             if match.count(1) > 0:
-                #print(face_names)
+                # print(face_names)
                 name = names_of_faces[match.index(1)]
             else:
                 if len(unknown_face_encodings) > 0:
                     unknown_match = face_recognition.compare_faces(unknown_face_encodings, face_encoding)
-                    if unknown_match.count(1) > 0:
+                    if unknown_match.count(1) > 50:
                         name = "Unnamed"
-                    #makeDirectory for "unnamed person"
+                    # makeDirectory for "unnamed person"
+                    if name != "Unnamed":
+                        path = '/home/deeplearning/Desktop/face_recognition examples/unknown_faces/'
+                        cv2.imwrite(str(path) + str(i) + 'unknown.jpg', small_frame)
+                        i += 1
                 unknown_face_encodings.append(face_encoding)
-                path = '/home/deeplearning/Desktop/face_recognition examples/unknown_faces/'
-                cv2.imwrite(str(path) + str(i) + 'unknown.jpg', small_frame)
-                i += 1
-
             face_names.append(name)
             if name == "Unknown":
                 print("Alert! Unknown Face!")
@@ -81,11 +89,20 @@ while True:
         bottom *= 4
         left *= 4
 
+        blue = (255, 0, 0)
+        red = (0, 0, 255)
+        orange = (255, 191, 0)
+        if name == "Unknown":
+            color = red
+        elif name == "Unnamed":
+            color = orange
+        else:
+            color = blue
         # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+        cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
 
         # Draw a label with a name below the face
-        cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+        cv2.rectangle(frame, (left, bottom - 35), (right, bottom), color, cv2.FILLED)
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
