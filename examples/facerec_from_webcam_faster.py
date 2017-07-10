@@ -1,5 +1,8 @@
-import face_recognition
+import subprocess
+import pyglet
 import cv2
+import face_recognition
+import playsound
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -27,13 +30,11 @@ vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
 xiang_image = face_recognition.load_image_file("xiang.jpg")
 xiang_face_encoding = face_recognition.face_encodings(xiang_image)[0]
 # iris
-#iris_image = face_recognition.load_image_file("iris.jpg")
-#iris_face_encoding = face_recognition.face_encodings(iris_image)[0]
-# sagar
-#sagar_image = face_recognition.load_image_file("sagar.jpg")
-#sagar_face_encoding = face_recognition.face_encodings(sagar_image)[0]
-list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]# sagar_face_encoding]
-names_of_faces = ['Barack', 'Vaidehi', 'Presenter', 'Xiang'] #'Sagar']
+# iris_image = face_recognition.load_image_file("iris.jpg")
+# iris_face_encoding = face_recognition.face_encodings(iris_image)[0]
+
+list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]#, iris_face_encoding]
+names_of_faces = ['Barack', 'Vaidehi', 'Austin', 'Xiang']#, 'Tigress']
 
 # Initialize some variables
 face_locations = []
@@ -42,6 +43,12 @@ unknown_face_encodings = []
 face_names = []
 process_this_frame = True
 i = 0
+j = 0
+k = 0
+blue = (255, 0, 0)
+red = (0, 0, 255)
+# orange = (0, 191, 255)
+color = red
 while True:
     # Grab a single frame of video
     ret, frame = video_capture.read()
@@ -65,15 +72,24 @@ while True:
                 # print(face_names)
                 name = names_of_faces[match.index(1)]
             else:
+                unknown_face_encodings.append(face_encoding)
                 if len(unknown_face_encodings) > 0:
                     unknown_match = face_recognition.compare_faces(unknown_face_encodings, face_encoding)
                     if unknown_match.count(1) > 50:
                         name = "Unnamed"
                     # makeDirectory for "unnamed person"
                     if name != "Unnamed":
-                        path = '/home/deeplearning/Desktop/face_recognition examples/unknown_faces/'
+                        path = '/Users/vduraphe@tibco.com/face_recognition/examples/unknown_faces/'
                         cv2.imwrite(str(path) + str(i) + 'unknown.jpg', small_frame)
                         i += 1
+                    else:
+                        newpath = r'/Users/vduraphe@tibco.com/face_recognition/examples/unnamed' + str(j)
+                        new_name = 'unnamed' + str(j)
+                        cv2.imwrite(str(newpath) + '.jpg', small_frame)
+                        j += 1
+                        new_name_face_encoding = face_recognition.face_encodings(small_frame)[0]
+                        list_of_faces.append(new_name_face_encoding)
+                        names_of_faces.append(str(new_name))
                 unknown_face_encodings.append(face_encoding)
             face_names.append(name)
             if name == "Unknown":
@@ -89,15 +105,6 @@ while True:
         bottom *= 4
         left *= 4
 
-        blue = (255, 0, 0)
-        red = (0, 0, 255)
-        orange = (255, 191, 0)
-        if name == "Unknown":
-            color = red
-        elif name == "Unnamed":
-            color = orange
-        else:
-            color = blue
         # Draw a box around the face
         cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
 
@@ -106,9 +113,28 @@ while True:
         font = cv2.FONT_HERSHEY_DUPLEX
         cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
 
+
     # Display the resulting image
     cv2.imshow('Video', frame)
+    if name == "Unknown" and len(face_encodings) > 0:
+        k += 1
+        if k > 10:
+            sound = pyglet.media.load('LowerQTrim.wav', streaming=False)
+            print("sound play")
+            sound.play()
+            cap = cv2.VideoCapture(0)
+            ret, frame = cap.read()
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+            cv2.imshow('intruder', gray)
+            cv2.waitKey(3000)
+            cv2.destroyWindow('intruder')
+           	# cv2.imshow('image', cap.read())
+           	# cv2.waitKey(3000)
+            # sound = 'LowerQ.mp3'
+            # subprocess.Popen(['player', sound])
+            # playsound('/Users/vduraphe@tibco.com/face_recognition/LowerQ.wav')
+            k = 0
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
