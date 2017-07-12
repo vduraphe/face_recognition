@@ -2,7 +2,7 @@ import subprocess
 import pyglet
 import cv2
 import face_recognition
-
+import playsound
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
