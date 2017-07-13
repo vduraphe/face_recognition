@@ -10,6 +10,9 @@ In addition to the installations required for Adam Geitgey's Face Recognition pr
 
 http://www.pyimagesearch.com/2015/06/15/install-opencv-3-0-and-python-2-7-on-osx/
 
+### Notes
+
+This program captures and saves images of unknown faces it detects in the frame. Please use with the permission and knowledge of anyone who may be seen on camera.
 
 # Face Recognition
 
