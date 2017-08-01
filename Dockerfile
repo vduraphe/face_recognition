@@ -24,6 +24,7 @@ RUN apt-get install -y --fix-missing \
     python3-dev \
     python3-numpy \
     software-properties-common \
+    pyglet \ ***ADDED***
     zip \
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
 
@@ -40,7 +41,7 @@ RUN cd ~ && \
 # COPY . /root/your_app_or_whatever
 # RUN cd /root/your_app_or_whatever && \
 #     pip3 install -r requirements.txt
-# RUN whatever_command_you_run_to_start_your_app
+# RUN whatever_command_you_run_to_start_your_app (python3 facerec_from_webcam_faster.py)open 
 
 COPY . /root/face_recognition
 RUN cd /root/face_recognition && \
@@ -49,3 +50,44 @@ RUN cd /root/face_recognition && \
 
 CMD cd /root/face_recognition/examples && \
     python3 recognize_faces_in_pictures.py
+
+
+— Vaidehi adds
+brew install boost-python --with-python3 --without-python
+git clone https://github.com/davisking/dlib.git
+cd dlib
+mkdir build
+cd build
+cmake .. -DDLIB_USE_CUDA=0 -DUSE_AVX_INSTRUCTIONS=1
+cmake --build .
+cd ..
+python3 setup.py install --yes USE_AVX_INSTRUCTIONS --no DLIB_USE_CUDA
+cd
+pip install face_recognition
+cd
+git clone https://github.com/opencv/opencv
+git clone https://github.com/opencv/opencv_contrib
+cd ~/opencv
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=RELEASE      
+	-D PYTHON3_EXECUTABLE=$(which python3)      
+	-D PYTHON3_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())")      
+	-D PYTHON3_LIBRARY=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin/libpython3.6m.dylib       
+	-D PYTHON3_LIBRARIES=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/bin      
+	-D PYTHON3_INCLUDE_DIR=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/include/python3.6m      
+	-D PYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")      
+	-D INSTALL_C_EXAMPLES=OFF 
+	-D INSTALL_PYTHON_EXAMPLES=ON      
+	-D BUILD_EXAMPLES=ON      
+	-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules ..
+make -j4
+sudo make install
+cd /usr/local/lib/python3.6/site-packages/
+ls -l *.so
+cd /usr/local/lib/python3.6/site-packages/
+mv cv2.cpython-36m-darwin.so cv2.so
+cd ~
+cd ~/.virtualenvs/cv/lib/python3.6/site-packages/
+ln -s /usr/local/lib/python3.6/site-packages/cv2.so cv2.so
+cd ~

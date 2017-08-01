@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"> </script>
+  	<link rel="stylesheet" href="tabs.css" type="text/css">
+  	<script type="text/javascript" src="tabs.js"></script>
+  	<header>
+  		<title>Snack Security</title>
+  	</header>
+	</head>
+	<body onload="openCity(event, 'Home')"">
+		<h1><h1 id= "title">Snack Security
+			<img class="icon" src="snack_icon.png" alt="Snack" width="100" height="100" align="center" /> </h1></h1>
+			<div class="tab">
+				<button class="tablinks" onclick="openCity(event, 'Home')">Home</button>
+  				<button class="tablinks" onclick="openCity(event, 'Known')">Known Faces</button>
+  				<button class="tablinks" onclick="openCity(event, 'Register')">Register Face</button>
+  				<button class="tablinks" onclick="openCity(event, 'About')">About</button>
+			</div>
+		<div id="Home" class="tabcontent">
+  			<h2>Unknown Intruders!</h2>
+  			<div id="unknown-images" class="polaroid-images">
+  				<!-- <div class="nameFunction" onclick="namePerson()"> -->
+				<script type="text/javascript">
+  					displayImagesUnknown();
+  				</script>
+  				<!-- </div> -->
+  			</div>
+		</div>
+		<div id="Known" class="tabcontent">
+			<h2>Familiar Faces!</h2>
+			<div id="known-faces" class="polaroid-images">
+				<script type="text/javascript">
+  					displayImages();
+  				</script>
+  			</div>
+  			<h3></h3>
+		</div>
+		<div id="Register" class="tabcontent">
+  			<h2>Upload Image</h2>
+  				<form class="imageform" action="" method="post">
+					<input class="nameBox" type="file" name="image" onchange="readURL(this);"/>
+				</form>
+  				<form class="nameform" action="">
+  					Name: <input class= "name" type="text" name="fname">
+  					<button class="submitFaces" onclick="submitFaces()">Submit Face!</button>
+				</form>
+		</div>
+
+		<div id="About" class="tabcontent">
+  			<h2>Snack Security</h2>
+  			<p id="info"> Snack Security is a program forked from Adam Geitgey's Facial Recognition API. Built to protect snacks, the program plays an alarm and captures an image when an unknown face is detected in the frame. After capturing multiple images with the same unknown face, the program recognizes the face as "Unnamed" rather than "Unknown". </p>
+  			<img id="gif" src="demo_facerec.gif" align="center">
+		</div>
+  	
+	</body>
+</html>

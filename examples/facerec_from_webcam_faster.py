@@ -2,7 +2,11 @@ import subprocess
 import pyglet
 import cv2
 import face_recognition
-import playsound
+from pptx import Presentation
+import os
+# import pdb
+from pathlib import Path
+# pdb.set_trace()
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -13,40 +17,52 @@ import playsound
 # OpenCV is *not* required to use the face_recognition library. It's only required if you want to run this
 # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
-# Get a reference to webcam #0 (the default one)
+# Get a reference to webcam #0 (the default one
+list_of_faces = []
+names_of_faces = []
+unknown_face_encodings = []
 video_capture = cv2.VideoCapture(0)
+image_path = "web/known_faces"
+unknown_path = "web/unknown_faces"
+for file in os.listdir(image_path):
+    filename, file_extension = os.path.splitext(file)
+    if file_extension == ".jpg":
+        face_image = face_recognition.load_image_file(image_path + "/" + file)
+        face_encoding = face_recognition.face_encodings(face_image)[0]
+        list_of_faces.append(face_encoding)
+        names_of_faces.append(filename)
+    
+print(names_of_faces)
 
+# for file in os.listdir(unknown_path):
+    # print(file)
+    # filename, file_extension = os.path.splitext(file)
+    # if file_extension == ".jpg":
+        # unknown_face_image = face_recognition.load_image_file(unknown_path + "/" + file)
+        # unknown_face_encoding = face_recognition.face_encodings(unknown_face_image)[0]
+        # unknown_face_encodings.append(unknown_face_encoding)
+
+# print(len(unknown_face_encodings))
 # Load a sample picture and learn how to recognize it.
-obama_image = face_recognition.load_image_file("obama.jpg")
-obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
+#obama_image = face_recognition.load_image_file("web/known_faces/obama.jpg")
+#obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
 
-# austin
-austin_image = face_recognition.load_image_file("austin.jpg")
-austin_face_encoding = face_recognition.face_encodings(austin_image)[0]
-# vaidehi
-vaidehi_image = face_recognition.load_image_file("vaidehi.jpg")
-vaidehi_face_encoding = face_recognition.face_encodings(vaidehi_image)[0]
-# xiang
-xiang_image = face_recognition.load_image_file("xiang.jpg")
-xiang_face_encoding = face_recognition.face_encodings(xiang_image)[0]
-# iris
-# iris_image = face_recognition.load_image_file("iris.jpg")
-# iris_face_encoding = face_recognition.face_encodings(iris_image)[0]
-
-list_of_faces = [obama_face_encoding, vaidehi_face_encoding, austin_face_encoding, xiang_face_encoding]#, iris_face_encoding]
-names_of_faces = ['Barack', 'Vaidehi', 'Austin', 'Xiang']#, 'Tigress']
 
 # Initialize some variables
 face_locations = []
 face_encodings = []
-unknown_face_encodings = []
 face_names = []
 process_this_frame = True
+sound = pyglet.media.load('LowerQTrim.wav', streaming=False)
 i = 0
 j = 0
 k = 0
 blue = (255, 0, 0)
 red = (0, 0, 255)
+is_open = 0
+sound_played = 0 
+exist = 1
+exist_name = 1  
 # orange = (0, 191, 255)
 color = red
 while True:
@@ -61,45 +77,76 @@ while True:
         # Find all the faces and face encodings in the current frame of video
         face_locations = face_recognition.face_locations(small_frame)
         face_encodings = face_recognition.face_encodings(small_frame, face_locations)
-
         face_names = []
         for face_encoding in face_encodings:
-
+            sound_played = 0
+            face_object = [face_encoding, sound_played]
             # See if the face is a match for the known face(s)
             match = face_recognition.compare_faces(list_of_faces, face_encoding)
             print(match)
             if match.count(1) > 0:
                 # print(face_names)
+                print(names_of_faces)
+                print(match.index(1))
                 name = names_of_faces[match.index(1)]
             else:
-                unknown_face_encodings.append(face_encoding)
                 if len(unknown_face_encodings) > 0:
                     unknown_match = face_recognition.compare_faces(unknown_face_encodings, face_encoding)
-                    if unknown_match.count(1) > 50:
+                    print(unknown_match.count(1))
+                    if unknown_match.count(1) > 25:
                         name = "Unnamed"
                     # makeDirectory for "unnamed person"
                     if name != "Unnamed":
-                        path = '/Users/vduraphe@tibco.com/face_recognition/examples/unknown_faces/'
-                        cv2.imwrite(str(path) + str(i) + 'unknown.jpg', small_frame)
+                        path = '/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/unknown_faces/Unknown ' + str(i) 
+                        while (exist == 1):
+                            my_file = Path(path + 'jpg')
+                            if my_file.is_file():
+                                i += 1
+                            else:
+                                exist = 0
+                        cv2.imwrite(str(path) + '.jpg', small_frame)
                         i += 1
                     else:
-                        newpath = r'/Users/vduraphe@tibco.com/face_recognition/examples/unnamed' + str(j)
-                        new_name = 'unnamed' + str(j)
+                        newpath = r'/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/known_faces/Unnamed ' + str(j)
+                        new_name = 'Unnamed ' + str(j)
+                        while (exist_name == 1):
+                            my_file = Path(newpath + '.jpg')
+                            if my_file.is_file():
+                                i += 1
+                            else:
+                                exist_name = 0
                         cv2.imwrite(str(newpath) + '.jpg', small_frame)
                         j += 1
                         new_name_face_encoding = face_recognition.face_encodings(small_frame)[0]
                         list_of_faces.append(new_name_face_encoding)
                         names_of_faces.append(str(new_name))
-                unknown_face_encodings.append(face_encoding)
-            face_names.append(name)
-            if name == "Unknown":
+                        sorted(names_of_faces)
+                unknown_face_encodings.append(face_encoding)    
+            face_names.append(name)        
+            if name == "Unknown" and len(face_encodings) > 0:
+                k += 1
+                if k > 10 and face_object[1] == 0:
+                    print("sound play")
+                    sound.play()
+                    cap = cv2.VideoCapture(0)
+                    ret, frame = cap.read()
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+                    cv2.imshow('intruder', gray)
+                    cv2.waitKey(3000)
+                    cv2.destroyWindow('intruder')
+                    k = 0
+                    face_object[1] == 0
                 print("Alert! Unknown Face!")
 
     process_this_frame = not process_this_frame
 
     # Display the results
+    print(name)
+    print(face_names)
     for (top, right, bottom, left), name in zip(face_locations, face_names):
         # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+        print(name)
         top *= 4
         right *= 4
         bottom *= 4
@@ -116,25 +163,21 @@ while True:
 
     # Display the resulting image
     cv2.imshow('Video', frame)
-    if name == "Unknown" and len(face_encodings) > 0:
-        k += 1
-        if k > 10:
-            sound = pyglet.media.load('LowerQTrim.wav', streaming=False)
-            print("sound play")
-            sound.play()
-            cap = cv2.VideoCapture(0)
-            ret, frame = cap.read()
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            cv2.imshow('intruder', gray)
-            cv2.waitKey(3000)
-            cv2.destroyWindow('intruder')
-           	# cv2.imshow('image', cap.read())
-           	# cv2.waitKey(3000)
-            # sound = 'LowerQ.mp3'
-            # subprocess.Popen(['player', sound])
-            # playsound('/Users/vduraphe@tibco.com/face_recognition/LowerQ.wav')
-            k = 0
+            
+    # *********PRESENTATION PART
+    pres_path = "/Users/vduraphe@tibco.com/node-js-sample/face_recognition/examples/presentations"
+    for file in os.listdir(pres_path):
+        if file == (name + '.pps'):
+            if is_open == 0:
+                path_to_presentation = pres_path + '/' + name + '.pps'
+                subprocess.call(['open', path_to_presentation])
+                is_open = 1
+        elif is_open == 1 and name == "Barack":
+            print("next slide")
+        else:
+            print("No presentation for " + name)
+
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
@@ -142,3 +185,4 @@ while True:
 # Release handle to the webcam
 video_capture.release()
 cv2.destroyAllWindows()
+
