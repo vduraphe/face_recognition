@@ -8,7 +8,7 @@ The file from the forked repository that I edited is "facerec_from_webcam_faster
 
 In addition to the installations required for Adam Geitgey's Face Recognition programs, the Pyglet framework is required to play sound in the example, "facerec_from_webcam_faster.py". Additionally, OpenCV 3+ is required for live webcam recognition. OpenCV installation is complicated-- I found that the following tutorial worked for me:
 
-http://www.pyimagesearch.com/2015/06/15/install-opencv-3-0-and-python-2-7-on-osx/
+http://www.pyimagesearch.com/2016/12/05/macos-install-opencv-3-and-python-3-5/
 
 ### Notes
 
