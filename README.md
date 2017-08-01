@@ -1,3 +1,19 @@
+# Snack Security- Derived from Face Recognition
+
+Snack Security is a program forked from Adam Geitgey's Facial Recognition API. Built to protect snacks, the program plays an alarm and captures an image when an unknown face is detected in the frame. After capturing multiple images with the same unknown face, the program recognizes the face as "Unnamed" rather than "Unknown".
+
+The file from the forked repository that I edited is "facerec_from_webcam_faster.py".
+
+### Prerequisites
+
+In addition to the installations required for Adam Geitgey's Face Recognition programs, the Pyglet framework is required to play sound in the example, "facerec_from_webcam_faster.py". Additionally, OpenCV 3+ is required for live webcam recognition. OpenCV installation is complicated-- I found that the following tutorial worked for me:
+
+http://www.pyimagesearch.com/2016/12/05/macos-install-opencv-3-and-python-3-5/
+
+### Notes
+
+This program captures and saves images of unknown faces it detects in the frame. Please use with the permission and knowledge of anyone who may be seen on camera.
+
 # Face Recognition
 
 Recognize and manipulate faces from Python or from the command line with
