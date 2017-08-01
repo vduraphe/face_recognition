@@ -91,3 +91,6 @@ cd ~
 cd ~/.virtualenvs/cv/lib/python3.6/site-packages/
 ln -s /usr/local/lib/python3.6/site-packages/cv2.so cv2.so
 cd ~
+git clone https://github.com/vduraphe/face_recognition.git
+cd face_recognition/examples/
+python3 facerec_from_webcam_faster.py

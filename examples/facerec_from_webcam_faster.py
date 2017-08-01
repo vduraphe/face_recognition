@@ -2,7 +2,7 @@ import subprocess
 import pyglet
 import cv2
 import face_recognition
-from pptx import Presentation
+# from pptx import Presentation
 import os
 # import pdb
 from pathlib import Path
@@ -166,7 +166,7 @@ while True:
 
             
     # *********PRESENTATION PART
-    pres_path = "/Users/vduraphe@tibco.com/node-js-sample/face_recognition/examples/presentations"
+    pres_path = "/Users/vduraphe@tibco.com/node-js-sample/face_recognition/examples/presentations" 
     for file in os.listdir(pres_path):
         if file == (name + '.pps'):
             if is_open == 0:
