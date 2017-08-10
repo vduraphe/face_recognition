@@ -9,6 +9,20 @@ The file from the forked repository that I edited is "facerec_from_webcam_faster
 In addition to the installations required for Adam Geitgey's Face Recognition programs, the Pyglet framework is required to play sound in the example, "facerec_from_webcam_faster.py". Additionally, OpenCV 3+ is required for live webcam recognition. OpenCV installation is complicated-- I found that the following tutorial worked for me:
 
 http://www.pyimagesearch.com/2016/12/05/macos-install-opencv-3-and-python-3-5/
+The only difference between my installation and the tutorial is that I used Python3.6.1, so my cmake configuration was the following:
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D PYTHON3_EXECUTABLE=$(which python3) \
+    -D PYTHON3_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+    -D PYTHON3_LIBRARY=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin/libpython3.6.dylib \
+    -D PYTHON3_LIBRARIES=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/bin \
+    -D PYTHON3_INCLUDE_DIR=/usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/Headers \
+    -D PYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+    -D INSTALL_C_EXAMPLES=OFF -D INSTALL_PYTHON_EXAMPLES=ON \
+    -D BUILD_EXAMPLES=ON \
+    -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules ..
+    
+A dockerfile is included for the installation of OpenCV3, Dlib, and Face_recognition on a linux machine. While it is currently unable to grab a reference to the machine webcam, the steps included in the file create a tutorial which can be used for any linux machine with python3.4.
 
 ### Notes
 
