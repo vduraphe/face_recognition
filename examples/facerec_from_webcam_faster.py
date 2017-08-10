@@ -2,7 +2,7 @@ import subprocess
 import pyglet
 import cv2
 import face_recognition
-# from pptx import Presentation
+#from pptx import Presentation
 import os
 # import pdb
 from pathlib import Path
@@ -34,15 +34,14 @@ for file in os.listdir(image_path):
     
 print(names_of_faces)
 
-# for file in os.listdir(unknown_path):
-    # print(file)
-    # filename, file_extension = os.path.splitext(file)
-    # if file_extension == ".jpg":
-        # unknown_face_image = face_recognition.load_image_file(unknown_path + "/" + file)
-        # unknown_face_encoding = face_recognition.face_encodings(unknown_face_image)[0]
-        # unknown_face_encodings.append(unknown_face_encoding)
+for file in os.listdir(unknown_path):
+    filename, file_extension = os.path.splitext(file)
+    if file_extension == ".jpg":
+        unknown_face_image = face_recognition.load_image_file(unknown_path + "/" + file)
+        unknown_face_encoding = face_recognition.face_encodings(unknown_face_image)[0]
+        unknown_face_encodings.append(unknown_face_encoding)
 
-# print(len(unknown_face_encodings))
+print(len(unknown_face_encodings))
 # Load a sample picture and learn how to recognize it.
 #obama_image = face_recognition.load_image_file("web/known_faces/obama.jpg")
 #obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
@@ -97,25 +96,25 @@ while True:
                         name = "Unnamed"
                     # makeDirectory for "unnamed person"
                     if name != "Unnamed":
-                        path = '/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/unknown_faces/Unknown ' + str(i) 
+                        path = '/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/unknown_faces/Unknown ' 
                         while (exist == 1):
-                            my_file = Path(path + 'jpg')
+                            my_file = Path(path + str(i) + '.jpg')
                             if my_file.is_file():
                                 i += 1
                             else:
                                 exist = 0
-                        cv2.imwrite(str(path) + '.jpg', small_frame)
+                        cv2.imwrite(str(path) + str(i) + '.jpg', small_frame)
                         i += 1
                     else:
-                        newpath = r'/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/known_faces/Unnamed ' + str(j)
-                        new_name = 'Unnamed ' + str(j)
+                        newpath = '/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/web/known_faces/Unnamed '
                         while (exist_name == 1):
-                            my_file = Path(newpath + '.jpg')
+                            my_file = Path(newpath + str(j) + '.jpg')
                             if my_file.is_file():
-                                i += 1
+                                j += 1
                             else:
                                 exist_name = 0
-                        cv2.imwrite(str(newpath) + '.jpg', small_frame)
+                        new_name = 'Unnamed ' + str(j)
+                        cv2.imwrite(str(newpath) + str(j) + '.jpg', small_frame)
                         j += 1
                         new_name_face_encoding = face_recognition.face_encodings(small_frame)[0]
                         list_of_faces.append(new_name_face_encoding)
@@ -166,7 +165,7 @@ while True:
 
             
     # *********PRESENTATION PART
-    pres_path = "/Users/vduraphe@tibco.com/node-js-sample/face_recognition/examples/presentations" 
+    pres_path = "/Users/vduraphe@tibco.com/node-js-sample/public/face_recognition/examples/presentations" 
     for file in os.listdir(pres_path):
         if file == (name + '.pps'):
             if is_open == 0:
@@ -175,8 +174,6 @@ while True:
                 is_open = 1
         elif is_open == 1 and name == "Barack":
             print("next slide")
-        else:
-            print("No presentation for " + name)
 
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
